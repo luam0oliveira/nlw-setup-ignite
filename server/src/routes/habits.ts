@@ -2,10 +2,9 @@ import { FastifyInstance } from "fastify";
 import { z } from "zod";
 import { prisma } from "../lib/prisma";
 import dayJs from "dayjs";
+import dayjs from "dayjs";
 
 export async function habitRoutes(app: FastifyInstance) {
-  app.get("/", async () => "Hello habit routes!");
-
   app.post("/", async (request) => {
     const createHabitBody = z.object({
       title: z.string(),
@@ -29,5 +28,56 @@ export async function habitRoutes(app: FastifyInstance) {
         },
       },
     });
+  });
+
+  // Select/deselect habit completed
+  app.patch("/:id/toggle", async (request) => {
+    const toggleHabitParams = z.object({
+      id: z.string().uuid(),
+    });
+
+    const { id: habit_id } = toggleHabitParams.parse(request.params);
+
+    const today = dayjs().startOf("day").toDate();
+
+    let day = await prisma.day.findUnique({
+      where: {
+        date: today,
+      },
+    });
+
+    if (!day) {
+      day = await prisma.day.create({
+        data: {
+          date: today,
+        },
+      });
+    }
+
+    const dayHabit = await prisma.dayHabit.findUnique({
+      where: {
+        day_id_habit_id: {
+          day_id: day.id,
+          habit_id,
+        },
+      },
+    });
+
+    if (!dayHabit) {
+      await prisma.dayHabit.create({
+        data: {
+          day_id: day.id,
+          habit_id,
+        },
+      });
+    } else {
+      await prisma.dayHabit.delete({
+        where: {
+          id: dayHabit.id,
+        },
+      });
+    }
+
+    return habit_id;
   });
 }
