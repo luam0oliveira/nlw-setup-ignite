@@ -3,18 +3,19 @@ import {
   Inter_400Regular,
   Inter_600SemiBold,
   Inter_700Bold,
+  Inter_800ExtraBold,
   Inter_900Black,
 } from "@expo-google-fonts/inter";
-// import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View, StatusBar } from "react-native";
+import { StatusBar } from "react-native";
 import { Loading } from "./src/components/Loading";
-import { Home } from "./src/screens/Home";
+import { Routes } from "./src/routes";
 
 export default function App() {
   const [fontsLoaded] = useFonts({
     Inter_400Regular,
     Inter_600SemiBold,
     Inter_700Bold,
+    Inter_800ExtraBold,
     Inter_900Black,
   });
 
@@ -24,7 +25,7 @@ export default function App() {
 
   return (
     <>
-      <Home />
+      <Routes />
       <StatusBar
         barStyle={"light-content"}
         backgroundColor={"transparent"}
@@ -33,12 +34,3 @@ export default function App() {
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  title: {
-    fontFamily: "Inter_700Bold",
-    color: "white",
-    fontSize: 28,
-    textAlign: "center",
-  },
-});
