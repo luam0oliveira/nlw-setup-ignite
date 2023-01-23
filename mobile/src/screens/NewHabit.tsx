@@ -4,12 +4,14 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import { BackButton } from "../components/BackButton";
 import { Checkbox } from "../components/Checkbox";
 import { useState } from "react";
 import { Feather } from "@expo/vector-icons";
 import colors from "tailwindcss/colors";
+import { api } from "../lib/axios";
 
 const availableWeekDays = [
   "Domingo",
@@ -23,6 +25,7 @@ const availableWeekDays = [
 
 export function NewHabit() {
   const [weekDays, setWeekDays] = useState<number[]>([]);
+  const [title, setTitle] = useState("");
 
   function handleToggleWeekDays(weekDayIndex: number) {
     if (weekDays.includes(weekDayIndex)) {
@@ -31,6 +34,25 @@ export function NewHabit() {
       );
     } else {
       setWeekDays((prevState) => [...prevState, weekDayIndex]);
+    }
+  }
+
+  async function handleCreateNewHabit() {
+    try {
+      if (!title.trim() || weekDays.length === 0) {
+        Alert.alert(
+          "Novo hábito",
+          "Informe o nome do hábito e escolha pelo menos um dia da semana."
+        );
+      }
+      await api.post("habits", { title, weekDays });
+
+      setTitle("");
+      setWeekDays([]);
+
+      Alert.alert("Novo hábito", "Novo hábito criado com sucesso!");
+    } catch (error) {
+      Alert.alert("Ops", "Não foi possível criar o novo hábito");
     }
   }
 
@@ -52,6 +74,8 @@ export function NewHabit() {
             focus:border-green-600"
           placeholderTextColor={colors.zinc[400]}
           placeholder="Dormir bem, exercícios, etc..."
+          onChangeText={setTitle}
+          value={title}
         />
 
         <Text className="mt-4 mb-3 text-white font-semibold text-base">
@@ -69,9 +93,10 @@ export function NewHabit() {
         <TouchableOpacity
           className="flex-row h-14 w-full items-center justify-center bg-green-600 rounded-md mt-10"
           activeOpacity={0.7}
+          onPress={handleCreateNewHabit}
         >
           <Feather name="check" size={20} color={colors.white} />
-          <Text className="font-semibold text-base text-white">Hueue</Text>
+          <Text className="font-semibold text-base text-white">Enviar</Text>
         </TouchableOpacity>
       </ScrollView>
     </View>
