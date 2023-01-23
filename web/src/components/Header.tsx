@@ -2,7 +2,6 @@ import logoImg from "../assets/logo.svg";
 import { NewHabitForm } from "./NewHabitForm";
 import { Plus, X } from "phosphor-react";
 import * as Dialog from "@radix-ui/react-dialog";
-import * as Popover from "@radix-ui/react-popover";
 
 export function Header() {
   return (
