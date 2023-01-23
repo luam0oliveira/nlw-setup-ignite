@@ -1,16 +1,14 @@
 import Fastify from "fastify";
 import { appRoutes } from "./routes";
-import { appMiddlewares } from "./middlewares";
+import fastifyCors from "@fastify/cors";
 
-const app = Fastify()
+const app = Fastify();
 
 // Middlwares
-app.register(appMiddlewares)
+app.register(fastifyCors);
 
 // Routes
-app.register(appRoutes)
+app.register(appRoutes);
 
 // Server run
-app.listen({ port: 3333 }).then(
-  () => console.log('Server is running')
-)
+app.listen({ port: 3333 }).then(() => console.log("Server is running"));
